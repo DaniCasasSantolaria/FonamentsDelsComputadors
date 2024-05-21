@@ -24,6 +24,7 @@
 #define TIME_IN_GREEN 7000
 #define TIME_IN_YELLOW 3000
 #define TIME_IN_RED 10000
+#define CORRECT_DISTANCE 50
 //Puntuation
 #define MAX_POINTS 100
 #define MINUS_TRAFFIC_LIGHT 20
@@ -55,7 +56,7 @@ void setup() {
   digitalWrite(RED_LED2, HIGH);
   puntuatuon = MAX_POINTS;
   referenceTime, timePassed = 0;
-  t_pulse, distance_cm, velocity = 0;
+  t_pulse, distance_cm1, distance_cm2, velocity = 0;
   isRed = true;
   isYellow, isGreen = false;
   wasRed wasYellow, wasGreen = false;
@@ -70,12 +71,15 @@ void loop() {
  delayMicroseconds(10);
  digitalWrite(TRIGGER1, LOW);
  digitalWrite(TRIGGER2, LOW);
- t_pulse = pulseIn(ECHO1, HIGH);
- t_pulse = pulseIn(ECHO2, HIGH);
- distance_cm = ((t_pulse/1000000)*340*100)/2;
+ t_pulse1 = pulseIn(ECHO1, HIGH);
+ t_pulse2 = pulseIn(ECHO2, HIGH);
+ distance_cm1 = ((t_pulse1/1000000)*340*100)/2;
+ distance_cm2 = ((t_pulse2/1000000)*340*100)/2;
+ if(isRed || isGreen || isYellow){
+   referenceTime = millis();
+ }
 
- if(isRed && timePassed > TIME_IN_RED){
-   // millis() - referenceTime > TIME_IN_RED
+ if(isRed && millis() - referenceTime > TIME_IN_RED){
    isRed = false;
    isGreen = true;
    digitalWrite(RED_LED1, LOW);
@@ -83,7 +87,11 @@ void loop() {
    digitalWrite(GREEN_LED1, HIGH);
    digitalWrite(GREEN_LED2, HIGH);
  }
-  if(isGreen && millis() % TIME_IN_GREEN == 0){
+ if(isRed && (distance_cm1 < CORRECT_DISTANCE || distance_cm2 < CORRECT_DISTANCE)){
+   //Puntuacio -= MINUS_TRAFFIC_LIGHT
+ }
+
+  if(isGreen && millis() - referenceTime > TIME_IN_GREEN){
    isGreen = false;
    isYellow = true;
    digitalWrite(GREEN_LED1, LOW);
@@ -91,7 +99,7 @@ void loop() {
    digitalWrite(YELLOW_LED1, HIGH);
    digitalWrite(YELLOW_LED2, HIGH);
  }
- if(isYellow && millis() % TIME_IN_YELLOW == 0){
+ if(isYellow && millis() - referenceTime > TIME_IN_YELLOW){
    isYellow = false;
    isRed = true;
    digitalWrite(YELLOW_LED1, LOW);
