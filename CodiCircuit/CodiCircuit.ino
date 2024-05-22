@@ -19,6 +19,9 @@
 #define YELLOW_LED2 12
 #define GREEN_LED2 13
 
+// BUZZER
+#define BUZZER 9
+
 //Configuration parameters
 //Traffic light
 #define TIME_IN_GREEN 8000
@@ -54,6 +57,7 @@ void setup() {
   pinMode(RED_LED2, OUTPUT);
   pinMode(YELLOW_LED2, OUTPUT);
   pinMode(GREEN_LED2, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
 
   digitalWrite(RED_LED1, HIGH);
   digitalWrite(RED_LED2, HIGH);
@@ -80,10 +84,11 @@ void loop() {
   
   t_pulse1 = pulseIn(ECHO1, HIGH);
   t_pulse2 = pulseIn(ECHO2, HIGH);
-  distance_cm1 = ((t_pulse1 / 1000000) * 340 * 100) / 2;
-  distance_cm2 = ((t_pulse2 / 1000000) * 340 * 100) / 2;
-
-  if (isRed && millis() - referenceTime > TIME_IN_RED) {
+  distance_cm1 = t_pulse1 * 10 / 292 / 2;
+  distance_cm2 = t_pulse2 * 10 / 292 / 2;
+  Serial.println(distance_cm1);
+  // SEMÀFORS
+  if (isRed && millis() - referenceTime > TIME_IN_RED) {  // RED -> GREEN
     isRed = false;
     isGreen = true;
     digitalWrite(RED_LED1, LOW);
@@ -92,8 +97,7 @@ void loop() {
     digitalWrite(GREEN_LED2, HIGH);
     referenceTime = millis();
   }
-
-  if (isGreen && millis() - referenceTime > TIME_IN_GREEN) {
+  if (isGreen && millis() - referenceTime > TIME_IN_GREEN) {  // GREEN -> YELLOW
     isGreen = false;
     isYellow = true;
     digitalWrite(GREEN_LED1, LOW);
@@ -102,8 +106,7 @@ void loop() {
     digitalWrite(YELLOW_LED2, HIGH);
     referenceTime = millis();
   }
-
-  if (isYellow && millis() - referenceTime > TIME_IN_YELLOW) {
+  if (isYellow && millis() - referenceTime > TIME_IN_YELLOW) {  // YELLOW -> RED
     isYellow = false;
     isRed = true;
     digitalWrite(YELLOW_LED1, LOW);
@@ -112,10 +115,15 @@ void loop() {
     digitalWrite(RED_LED2, HIGH);
     referenceTime = millis();
   }
-}
 
- //if(isRed && (distance_cm1 < CORRECT_DISTANCE || distance_cm2 < CORRECT_DISTANCE)){
-   //Puntuacio -= MINUS_TRAFFIC_LIGHT
-// }
+  // SENSORS DE ULTRASÓ
+
+  if(distance_cm1 < 16 && isRed){
+    tone(BUZZER, 800, 64);
+  }
+  if(distance_cm2 < 16 && isRed){
+    tone(BUZZER, 100, 64);
+  }
+}
 
 
