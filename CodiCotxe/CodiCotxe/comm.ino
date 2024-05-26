@@ -28,7 +28,7 @@ On,
 Veure exemple
 
 Carles Vilella, 2017
-*/
+
 
 #include "comm.h"
 
@@ -206,4 +206,4 @@ int getData (int channel) {
 
   return (data);
 
-}
+}*/
