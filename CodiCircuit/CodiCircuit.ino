@@ -119,11 +119,14 @@ void loop() {
   // SENSORS DE ULTRASÓ
 
   if(distance_cm1 < 16 && isRed){
+    tone(BUZZER, 100);
+  }
+  else{
+    noTone(BUZZER);
+  }
+  /*if(distance_cm2 < 16 && isRed){
     tone(BUZZER, 800, 64);
-  }
-  if(distance_cm2 < 16 && isRed){
-    tone(BUZZER, 100, 64);
-  }
+  }*/
 }
 
 

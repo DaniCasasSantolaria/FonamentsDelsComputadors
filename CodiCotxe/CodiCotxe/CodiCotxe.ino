@@ -32,10 +32,10 @@ void setup() {
  Serial.begin(9600);
 
  //Inicialització
- digitalWrite (MOTOR_DRIVER_IN_1, 0);
- digitalWrite (MOTOR_DRIVER_IN_2, 0);
- digitalWrite (MOTOR_DRIVER_IN_3, 0);
- digitalWrite (MOTOR_DRIVER_IN_4, 0);
+ digitalWrite (MOTOR_DRIVER_IN_1, LOW);
+ digitalWrite (MOTOR_DRIVER_IN_2, LOW);
+ digitalWrite (MOTOR_DRIVER_IN_3, LOW);
+ digitalWrite (MOTOR_DRIVER_IN_4, LOW);
  analogWrite (MOTOR_DRIVER_ENABLE1, 0);
  analogWrite (MOTOR_DRIVER_ENABLE2, 0);
 
@@ -47,18 +47,51 @@ void loop() {
     if(Serial.available()>0){
       letra = Serial.read();
     }
-    switch(letra){
-      case 'w':
-      Serial.print("Avanza");
-        break;
-      case 's':
-      Serial.print("Retrocede");
-        break;
-      case 'a':
-      Serial.print("Derecha");
-        break;
-      case 'd':
-      Serial.print("Izquierda");
-        break;
-    }
+    switch (letra) {
+    case 'w': // Avanzar
+      Serial.println("Avanza");
+      analogWrite(MOTOR_DRIVER_ENABLE1, 255); // Velocidad máxima
+      analogWrite(MOTOR_DRIVER_ENABLE2, 255);
+      digitalWrite(MOTOR_DRIVER_IN_1, HIGH);
+      digitalWrite(MOTOR_DRIVER_IN_2, LOW);
+      digitalWrite(MOTOR_DRIVER_IN_3, HIGH);
+      digitalWrite(MOTOR_DRIVER_IN_4, LOW);
+      break;
+    case 's': // Retroceder
+      Serial.println("Retrocede");
+      analogWrite(MOTOR_DRIVER_ENABLE1, 255); // Velocidad máxima
+      analogWrite(MOTOR_DRIVER_ENABLE2, 255);
+      digitalWrite(MOTOR_DRIVER_IN_1, LOW);
+      digitalWrite(MOTOR_DRIVER_IN_2, HIGH);
+      digitalWrite(MOTOR_DRIVER_IN_3, LOW);
+      digitalWrite(MOTOR_DRIVER_IN_4, HIGH);
+      break;
+    case 'a': // Girar a la izquierda
+      Serial.println("Izquierda");
+      analogWrite(MOTOR_DRIVER_ENABLE1, 255); // Velocidad máxima
+      analogWrite(MOTOR_DRIVER_ENABLE2, 255);
+      digitalWrite(MOTOR_DRIVER_IN_1, LOW);
+      digitalWrite(MOTOR_DRIVER_IN_2, HIGH);
+      digitalWrite(MOTOR_DRIVER_IN_3, HIGH);
+      digitalWrite(MOTOR_DRIVER_IN_4, LOW);
+      break;
+    case 'd': // Girar a la derecha
+      Serial.println("Derecha");
+      analogWrite(MOTOR_DRIVER_ENABLE1, 255); // Velocidad máxima
+      analogWrite(MOTOR_DRIVER_ENABLE2, 255);
+      digitalWrite(MOTOR_DRIVER_IN_1, HIGH);
+      digitalWrite(MOTOR_DRIVER_IN_2, LOW);
+      digitalWrite(MOTOR_DRIVER_IN_3, LOW);
+      digitalWrite(MOTOR_DRIVER_IN_4, HIGH);
+      break;
+    default:
+      // Detener los motores si se recibe una letra no reconocida
+      digitalWrite(MOTOR_DRIVER_IN_1, LOW);
+      digitalWrite(MOTOR_DRIVER_IN_2, LOW);
+      digitalWrite(MOTOR_DRIVER_IN_3, LOW);
+      digitalWrite(MOTOR_DRIVER_IN_4, LOW);
+      analogWrite(MOTOR_DRIVER_ENABLE1, 0);
+      analogWrite(MOTOR_DRIVER_ENABLE2, 0);
+      break;
+  }
 }
